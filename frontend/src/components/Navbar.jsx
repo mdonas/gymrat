@@ -1,30 +1,57 @@
-import { useNavigate, Link, useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 export default function ButtonAppBar() {
-  const navigate = useNavigate();
-  const location = useLocation()
+  const location = useLocation();
+  const isLoginRegisterPage =
+    location.pathname === "/" || location.pathname === "/registrar";
 
   return (
-    <div className="bg-main">
-      <Link to="/">
-        <h1 className="">Tasks</h1>
-      </Link>
-
-      {location.pathname === "/tasks/new" || location.pathname.includes('/tasks/') ? (
-        <button
-          className="bg-slate-200 text-black font-bold py-2 px-4 rounded-lg my-2"
-          onClick={() => navigate("/")}
-        >
-          Go back
-        </button>
-      ) : (
-        <button
-          className="bg-slate-200 text-black font-bold py-2 px-4 rounded-lg my-2"
-          onClick={() => navigate("/tasks/new")}
-        >
-          Add Task
-        </button>
-      )}
-    </div>
+    !isLoginRegisterPage && (
+      <>
+        <nav className="navbar navbar-expand-sm bg-main">
+          <div className="container">
+            <div className="d-flex w-100 justify-content-between align-items-center">
+              <Link to="/">
+                <img src="../public/img/MainLogo.jpg" alt="" width={60} />
+              </Link>
+              <ul className="navbar-nav">
+                <li className="nav-item h5">
+                  <Link
+                    to="/rutinas"
+                    className="nav-link active"
+                    href="#"
+                    aria-current="page"
+                  >
+                    Mis Rutinas
+                  </Link>
+                </li>
+                <li className="nav-item h5">
+                  <Link to="/recuperacion" className="nav-link active">
+                    Recuperacion
+                  </Link>
+                </li>
+                <li className="nav-item h5">
+                  <Link
+                    className="nav-link active"
+                    to="/historial"
+                    aria-current="page"
+                  >
+                    Historial
+                  </Link>
+                </li>
+                <li className="nav-item h5">
+                  <Link className="nav-link active" to="/progreso">
+                    Progreso
+                  </Link>
+                </li>
+              </ul>
+              <Link to="/">
+                <img src="../public/img/MainLogo.jpg" alt="" width={60} />
+              </Link>
+            </div>
+          </div>
+        </nav>
+      </>
+    )
   );
 }

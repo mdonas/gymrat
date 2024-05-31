@@ -4,23 +4,26 @@
 @import "../node_modules/bootstrap/scss/variables-dark";
 
 @font-face {
-    font-family: 'Bebas Neue';
-    src: url('../public/fonts/BebasNeue-Regular.woff2') format('woff2'),
-        url('../public/fonts/BebasNeue-Regular.woff') format('woff'),
-        url('../public/fonts/BebasNeue-Regular.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
+  font-family: "Bebas Neue";
+  src: url("../public/fonts/BebasNeue-Regular.woff2") format("woff2"),
+    url("../public/fonts/BebasNeue-Regular.woff") format("woff"),
+    url("../public/fonts/BebasNeue-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-size: 48px;
 }
 
+$body-bg: #1e1e1e;
+$font-family-base: "Bebas Neue";
 
-$body-bg:#1E1E1E;
-$font-family-base:'Bebas Neue';
-
-$custom_colors:(
-    
-    "main" :#E3D5BB
+$custom_colors: (
+  "main": #e3d5bb,
+  "gris": #c8c8c8,
 );
 
+input::-webkit-placeholder {
+  color: #c8c8c8;
+}
 
 $theme-colors: map-merge($theme-colors, $custom-colors);
 
@@ -32,3 +35,11 @@ $theme-colors: map-merge($theme-colors, $custom-colors);
 @import "../node_modules/bootstrap/scss/root";
 
 @import "../node_modules/bootstrap/scss/bootstrap";
+//Si ponemos reglas aqui se leeran despues de las de bootstrap, seran las que se aplican
+.h5 {
+  margin: 0;
+}
+.info {
+  font-size: 14px;
+  color: rgb(33, 37, 43, 0.8);
+}

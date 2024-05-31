@@ -1,9 +1,9 @@
 export const db = {
-  user: process.env.DB_USER || "postgres",
-  password: process.env.DB_PASSWORD || "MDR925mdr",
-  host: process.env.DB_HOST || "localhost",
-  port: process.env.DB_PORT || 5432,
-  database: process.env.DB_DATABASE || "gymrat",
+  user: "postgres",
+  password: "MDR925mdr",
+  host: "localhost",
+  port: 5432,
+  database: "gymrat",
 };
 
-export const port = process.env.PORT || 4000;
+export const port = 4000;
