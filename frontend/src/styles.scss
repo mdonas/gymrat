@@ -5,9 +5,9 @@
 
 @font-face {
   font-family: "Bebas Neue";
-  src: url("../public/fonts/BebasNeue-Regular.woff2") format("woff2"),
-    url("../public/fonts/BebasNeue-Regular.woff") format("woff"),
-    url("../public/fonts/BebasNeue-Regular.ttf") format("truetype");
+  src: url("../fonts/BebasNeue-Regular.woff2") format("woff2"),
+    url("../fonts/BebasNeue-Regular.woff") format("woff"),
+    url("../fonts/BebasNeue-Regular.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
   font-size: 48px;
@@ -19,6 +19,8 @@ $font-family-base: "Bebas Neue";
 $custom_colors: (
   "main": #e3d5bb,
   "gris": #c8c8c8,
+  "verde": #70e000,
+  "naranja": #e29728,
 );
 
 input::-webkit-placeholder {
@@ -42,4 +44,7 @@ $theme-colors: map-merge($theme-colors, $custom-colors);
 .info {
   font-size: 14px;
   color: rgb(33, 37, 43, 0.8);
+}
+ul {
+  list-style: none;
 }

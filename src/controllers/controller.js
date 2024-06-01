@@ -36,17 +36,52 @@ export const getAllEjercicios = async (req, res, next) => {
     next(error);
   }
 };
+export const getAllRutinas = async (req, res, next) => {
+  try {
+    const allEjercicios = await pool.query("SELECT * FROM rutinas");
+
+    res.json(allEjercicios.rows);
+  } catch (error) {
+    next(error);
+  }
+};
 
 export const getRutina = async (req, res, next) => {
   const { id } = req.params;
   try {
-    const query =
-      "SELECT e.nombre, er.orden, er.series " +
-      "FROM ejercicios_rutina er JOIN ejercicios e ON er.id_ejercicio = e.id_ejercicio " +
-      "WHERE er.id_rutina = $1";
+    const query = "SELECT * FROM rutinas WHERE id_rutina = $1";
 
     const rutina = await pool.query(query, [id]);
     res.json(rutina.rows);
+  } catch (error) {
+    next(error);
+  }
+};
+export const getEjerciciosFromRutina = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    let query =
+      " SELECT er.orden, er.series, er.dia, er.titulo_dia,er.repeticiones,er.id_rutina , er.id_ejercicio_rutina,er.id_ejercicio, e.nombre AS ejercicio_nombre " +
+      "FROM ejercicios_rutina AS er " +
+      "JOIN ejercicios AS e ON er.id_ejercicio = e.id_ejercicio " +
+      "WHERE er.id_rutina = $1 ORDER BY er.dia";
+    const allEjercicios = await pool.query(query, [id]);
+
+    res.json(allEjercicios.rows);
+  } catch (error) {
+    next(error);
+  }
+};
+export const getDiasFromRutina = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    let query =
+      " SELECT DISTINCT er.titulo_dia , er.id_rutina, er.dia " +
+      "from ejercicios_rutina as er where er.id_rutina >$1 ORDER BY er.dia ";
+    const allDias = await pool.query(query, [id]);
+
+    res.json(allDias.rows);
   } catch (error) {
     next(error);
   }
@@ -77,6 +112,28 @@ export const createEjercicio = async (req, res, next) => {
     const result = await pool.query(
       "INSERT INTO ejercicios (nombre,descripcion) VALUES ($1,$2) RETURNING *",
       [nombre, descripcion]
+    );
+    res.json(result.rows[0]);
+  } catch (error) {
+    next(error);
+  }
+};
+export const addEjercicioRutina = async (req, res, next) => {
+  try {
+    const {
+      dia,
+      id_ejercicio,
+      id_rutina,
+      orden,
+      repeticiones,
+      series,
+      titulo_dia,
+    } = req.body;
+
+    const result = await pool.query(
+      "insert into ejercicios_rutina (id_rutina,id_ejercicio,orden,series,dia,titulo_dia,repeticiones) " +
+        "values ($1,$2,$3,$4,$5,$6,$7) RETURNING *",
+      [id_rutina, id_ejercicio, orden, series, dia, titulo_dia, repeticiones]
     );
     res.json(result.rows[0]);
   } catch (error) {
@@ -134,6 +191,41 @@ export const updateEjercicio = async (req, res, next) => {
 
     console.log(nombre);
     res.json({});
+  } catch (error) {
+    next(error);
+  }
+};
+export const updateEjerciciosRutina = async (req, res, next) => {
+  try {
+    const {
+      dia,
+      id_ejercicio,
+      id_rutina,
+      orden,
+      repeticiones,
+      series,
+      titulo_dia,
+      id_ejercicio_rutina,
+    } = req.body;
+    //si no quieren actualizar el nombre lo mantenemos
+    const query =
+      `UPDATE ejercicios_rutina SET id_rutina = $1, id_ejercicio = $2, orden = $3, series = $4, dia = $5, titulo_dia = $6, repeticiones = $7 ` +
+      `WHERE id_ejercicio_rutina=$8 RETURNING *`;
+    const result = await pool.query(query, [
+      id_rutina,
+      id_ejercicio,
+      orden,
+      series,
+      dia,
+      titulo_dia,
+      repeticiones,
+      id_ejercicio_rutina,
+    ]);
+
+    if (result.rows.length === 0)
+      return res.status(404).json({ message: "Ejercicio no encontrado" });
+
+    res.json(result.rows[0]);
   } catch (error) {
     next(error);
   }

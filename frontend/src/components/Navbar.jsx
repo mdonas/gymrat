@@ -5,6 +5,14 @@ export default function ButtonAppBar() {
   const isLoginRegisterPage =
     location.pathname === "/" || location.pathname === "/registrar";
 
+  function paginaActiva(pagina) {
+    if (location.pathname === pagina) {
+      return "nav-link active";
+    } else {
+      return "nav-link";
+    }
+  }
+
   return (
     !isLoginRegisterPage && (
       <>
@@ -12,13 +20,13 @@ export default function ButtonAppBar() {
           <div className="container">
             <div className="d-flex w-100 justify-content-between align-items-center">
               <Link to="/">
-                <img src="../public/img/MainLogo.jpg" alt="" width={60} />
+                <img src="../img/MainLogo.jpg" alt="" width={60} />
               </Link>
               <ul className="navbar-nav">
                 <li className="nav-item h5">
                   <Link
                     to="/rutinas"
-                    className="nav-link active"
+                    className={paginaActiva("/rutinas")}
                     href="#"
                     aria-current="page"
                   >
@@ -26,13 +34,16 @@ export default function ButtonAppBar() {
                   </Link>
                 </li>
                 <li className="nav-item h5">
-                  <Link to="/recuperacion" className="nav-link active">
+                  <Link
+                    to="/recuperacion"
+                    className={paginaActiva("/recuperacion")}
+                  >
                     Recuperacion
                   </Link>
                 </li>
                 <li className="nav-item h5">
                   <Link
-                    className="nav-link active"
+                    className={paginaActiva("/historial")}
                     to="/historial"
                     aria-current="page"
                   >
@@ -40,13 +51,13 @@ export default function ButtonAppBar() {
                   </Link>
                 </li>
                 <li className="nav-item h5">
-                  <Link className="nav-link active" to="/progreso">
+                  <Link className={paginaActiva("/progreso")} to="/progreso">
                     Progreso
                   </Link>
                 </li>
               </ul>
               <Link to="/">
-                <img src="../public/img/MainLogo.jpg" alt="" width={60} />
+                <img src="../img/MainLogo.jpg" alt="" width={60} />
               </Link>
             </div>
           </div>
