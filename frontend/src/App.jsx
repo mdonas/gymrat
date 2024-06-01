@@ -1,12 +1,12 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import RutinasList from "./components/RutinasList";
-import TaskForm from "./components/TaskForm";
-import LoginForm from "./components/LoginForm";
-import RegisterForm from "./components/RegisterForm";
+import RutinasList from "./components/Rutinas-Ejercicios/RutinasList";
+import LoginForm from "./components/Login-Register/LoginForm";
+import RegisterForm from "./components/Login-Register/RegisterForm";
 import { Container } from "@mui/material";
 import Navbar from "./components/Navbar";
-import RutinasEditar from "./components/RutinasEditar";
-import RutinasAdd from "./components/RutinasAdd";
+import RutinasEditar from "./components/Rutinas-Ejercicios/RutinasEditar";
+import RutinasAdd from "./components/Rutinas-Ejercicios/RutinasAdd";
+import Recuperacion from "./components/Recuperacion/Recuperacion";
 export default function App() {
   return (
     <BrowserRouter>
@@ -15,10 +15,10 @@ export default function App() {
         <Routes>
           <Route path="/" element={<LoginForm />} />
           <Route path="/registrar" element={<RegisterForm />} />
-          <Route path="/ejercicios/new" element={<TaskForm />} />
           <Route path="/rutinas" element={<RutinasList />} />
           <Route path="/rutinas/editar/:id" element={<RutinasEditar />} />
           <Route path="/rutinas/editar/:id/añadir" element={<RutinasAdd />} />
+          <Route path="/recuperacion" element={<Recuperacion />}></Route>
         </Routes>
       </Container>
     </BrowserRouter>

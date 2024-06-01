@@ -8,6 +8,7 @@ import {
   getAllRutinas,
   getEjercicio,
   createEjercicio,
+  createRegistroEntreno,
   addEjercicioRutina,
   deleteEjercicio,
   updateEjercicio,
@@ -31,6 +32,7 @@ router.get("/ejercicios/:id", getEjercicio);
 
 router.post("/ejercicios", createEjercicio);
 router.post("/ejercicios/rutina", addEjercicioRutina);
+router.post("/rutina/entreno", createRegistroEntreno);
 
 router.post("/registrar", checkUserRegistro);
 

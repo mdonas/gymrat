@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 function EjerciciosDiasCard({ rutina }) {
-  const navigate = useNavigate();
-
   const [ejercicios, setEjercicios] = useState([]);
-  console.log(ejercicios);
+  const [registroEntreno, setRegistroEntreno] = useState([]);
+  // console.log(ejercicios);
 
   const loadEjercicios = async () => {
     const response = await fetch(
@@ -14,16 +13,44 @@ function EjerciciosDiasCard({ rutina }) {
     const data = await response.json();
     setEjercicios(data);
     separarEjercios();
-    console.log(data);
+    // console.log(data);
   };
+  function handleClick(e) {
+    handleEntrenamiento(e.target.value);
+  }
+  async function handleEntrenamiento(tituloDia) {
+    const fecha = `${new Date().getDate()}-${
+      new Date().getMonth() + 1
+    }-${new Date().getFullYear()}`;
+    setRegistroEntreno({
+      id_rutina: rutina.id_rutina,
+      fecha_entrenamiento: fecha,
+      dia_rutina: ejerciciosPorDia[tituloDia][0].dia,
+    });
+    console.log(registroEntreno);
+    try {
+      const res = await fetch("http://localhost:4000/rutina/entreno", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(registroEntreno),
+      });
+      if (res.ok) {
+        alert("Se ha resgistrado su entreno ");
+      } else {
+        alert("Ha habido un error al registrar su entreno");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   useEffect(() => {
     loadEjercicios();
-  }, []);
+  }, [rutina.id_rutina]);
 
   const [ejerciciosPorDia, setEjerciciosPorDia] = useState({});
   const [titulosUnicos, setTitulosUnicos] = useState([]);
-
+  console.log(ejerciciosPorDia);
   function separarEjercios() {
     const ejerciciosSeparados = {};
     const titulosSeparados = [];
@@ -63,7 +90,16 @@ function EjerciciosDiasCard({ rutina }) {
           key={titulo}
           className=" my-2 ps-3 pt-3 bg-main text-black rounded-3"
         >
-          <h3 className="font-bold text-xl">{titulo}</h3>
+          <div className="d-flex justify-content-between mb-2">
+            <h3 className="font-bold text-xl">{titulo}</h3>
+            <button
+              className="btn btn-verde me-3"
+              onClick={handleClick}
+              value={titulo}
+            >
+              Hacer Entrenamiento
+            </button>
+          </div>
           <div className="container">
             <div className="d-flex justify-content-around text-center">
               {ejerciciosPorDia[titulo].map((ejercicio) => (

@@ -118,6 +118,19 @@ export const createEjercicio = async (req, res, next) => {
     next(error);
   }
 };
+export const createRegistroEntreno = async (req, res, next) => {
+  try {
+    const { id_rutina, fecha_entrenamiento, dia_rutina } = req.body;
+
+    const result = await pool.query(
+      "INSERT INTO registros_entrenamiento (id_rutina, fecha_entrenamiento, dia_rutina) VALUES ($1,$2,$3) RETURNING *",
+      [id_rutina, fecha_entrenamiento, dia_rutina]
+    );
+    res.json(result.rows[0]);
+  } catch (error) {
+    next(error);
+  }
+};
 export const addEjercicioRutina = async (req, res, next) => {
   try {
     const {
