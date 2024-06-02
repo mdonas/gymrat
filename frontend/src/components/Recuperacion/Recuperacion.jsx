@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 export default function Recuperacion() {
   const user = JSON.parse(localStorage.user);
+  console.log(localStorage);
   const [entrenos, setEntrenos] = useState([]);
   const [ultimosEntrenos, setUltmosEntrenos] = useState([]);
   const [musculos, setMusculos] = useState([]);

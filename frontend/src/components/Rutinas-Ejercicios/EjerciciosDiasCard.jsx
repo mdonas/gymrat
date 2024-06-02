@@ -105,18 +105,17 @@ function EjerciciosDiasCard({ rutina }) {
           <Link to={`/rutinas/editar/${rutina.id_rutina}`} className="me-2">
             <img src="../../img/pen-solid.svg" alt="" width={30} />
           </Link>
-          <div className="d-inline">
-            <img src="../../img/trash-solid.svg" alt="" width={26} />
-          </div>
         </div>
       </div>
-      {titulosUnicos.map((titulo) => (
+      {titulosUnicos.map((titulo, index) => (
         <div
           key={titulo}
           className=" my-2 ps-3 pt-3 bg-main text-black rounded-3"
         >
           <div className="d-flex justify-content-between mb-2">
-            <h3 className="font-bold text-xl">{titulo}</h3>
+            <h3 className="font-bold text-xl">
+              {titulo}- Día {index + 1}
+            </h3>
             <button
               className="btn btn-verde me-3"
               onClick={handleClick}

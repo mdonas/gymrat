@@ -20,7 +20,12 @@ export default function ButtonAppBar() {
           <div className="container">
             <div className="d-flex w-100 justify-content-between align-items-center">
               <Link to="/">
-                <img src="../img/MainLogo.jpg" alt="" width={60} />
+                <img
+                  src="../img/MainLogo.jpg"
+                  alt="logo"
+                  width={60}
+                  title="Ir a la pagina de Inicio"
+                />
               </Link>
               <ul className="navbar-nav">
                 <li className="nav-item h5">
@@ -57,7 +62,12 @@ export default function ButtonAppBar() {
                 </li>
               </ul>
               <Link to="/">
-                <img src="../img/MainLogo.jpg" alt="" width={60} />
+                <img
+                  src="../img/MainLogo.jpg"
+                  alt="logo"
+                  width={60}
+                  title="Ir a la pagina de Inicio"
+                />
               </Link>
             </div>
           </div>

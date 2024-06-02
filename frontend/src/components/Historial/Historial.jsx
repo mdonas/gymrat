@@ -5,6 +5,9 @@ export default function Historial() {
   const user = JSON.parse(localStorage.user);
 
   const [entrenos, setEntrenos] = useState([]);
+  const [ultimos6Entrenos, setultimos6Entrenos] = useState([]);
+  const [musculosEntrenos, setMusculosEntrenos] = useState([]);
+  const [entrenosUnicos, setEntrenosUnicos] = useState([]);
   const loadEntrenos = async () => {
     const response = await fetch(
       `http://localhost:4000/recuperacion/${user.id_usuario}`
@@ -13,22 +16,38 @@ export default function Historial() {
     setEntrenos(data);
     console.log(data);
   };
+  const loadMusculosEntrenos = async () => {
+    const response = await fetch(`http://localhost:4000/musculos/entrenos`);
+    const data = await response.json();
+    setMusculosEntrenos(data);
+    // console.log(data);
+  };
 
   function cuentaDiasEntrenados() {
-    console.log(entrenos);
-    const diasEntrenamiento = entrenos.map((entreno) =>
+    const hoy = new Date();
+    const diaSemanaActual = hoy.getDay();
+    const primerDiaSemana =
+      diaSemanaActual === 0
+        ? hoy.getDate() - 6
+        : hoy.getDate() - diaSemanaActual + 1; // primer día de la semana actual
+    const ultimoDiaSemana = primerDiaSemana + 6; // último día de la semana actual
+
+    const entrenosSemanaActual = entrenos.filter((entreno) => {
+      const fechaEntreno = new Date(entreno.fecha_entrenamiento);
+
+      return (
+        fechaEntreno.getDate() >= primerDiaSemana &&
+        fechaEntreno.getDate() <= ultimoDiaSemana
+      );
+    });
+
+    const diasEntrenamiento = entrenosSemanaActual.map((entreno) =>
       entreno.fecha_entrenamiento.substring(0, 10)
     ); // extraemos la fecha sin la hora
-    console.log(diasEntrenamiento);
-    const diasUnicos = [...new Set(diasEntrenamiento)]; // eliminamos duplicados
-    const diasSemana = diasUnicos.map((fecha) => {
-      const diaSemana = new Date(fecha).getDay(); // convertimos la fecha a día de la semana (0 = domingo, 1 = lunes,..., 6 = sábado)
-      return diaSemana;
-    });
-    const diasEntrenados = [...new Set(diasSemana)]; // eliminamos duplicados
-    // console.log(diasEntrenados);
 
-    return diasEntrenados.length;
+    const diasUnicos = [...new Set(diasEntrenamiento)]; // eliminamos duplicados
+
+    return diasUnicos.length;
   }
   function cuentaSemanasEntrenadas() {
     const entrenosPorSemana = entrenos.reduce((acc, item) => {
@@ -61,12 +80,79 @@ export default function Historial() {
   }
   const diasUnicos = Array.from(
     new Set(
-      entrenos.map((item) => new Date(item.fecha_entrenamiento).getDate())
+      entrenos
+        .filter(
+          (item) =>
+            new Date(item.fecha_entrenamiento).getMonth() ===
+            new Date().getMonth()
+        )
+        .map((item) => new Date(item.fecha_entrenamiento).getDate())
     )
   );
+
+  function getUltimos6Entrenos() {
+    let entrenosRecientes = entrenos.slice(-6);
+
+    const meses = [
+      "Enero",
+      "Febrero",
+      "Marzo",
+      "Abril",
+      "Mayo",
+      "Junio",
+      "Julio",
+      "Agosto",
+      "Septiembre",
+      "Octubre",
+      "Noviembre",
+      "Diciembre",
+    ];
+
+    const entrenosFormateados = entrenosRecientes.map((dato) => {
+      const fecha = new Date(dato.fecha_entrenamiento);
+      const dia = fecha.getDate();
+      const mes = meses[fecha.getMonth()];
+      const fechaFormateada = `${dia} ${mes}`;
+      return { ...dato, fecha_entrenamiento: fechaFormateada };
+    });
+    setultimos6Entrenos(entrenosFormateados);
+  }
+  const getEntrenosUnicos = musculosEntrenos.reduce((acumulador, entreno) => {
+    const { id_rutina, dia, titulo_dia, series, repeticiones } = entreno;
+    console.log(entreno);
+    let totalRepes;
+    if (repeticiones.includes("-")) {
+      const [_, repeticionesMax] = repeticiones.split("-");
+      totalRepes = series * parseInt(repeticionesMax, 10);
+    } else {
+      totalRepes = series * parseInt(repeticiones, 10);
+    }
+    const entrenoExistente = acumulador.find(
+      (item) => item.id_rutina === id_rutina && item.dia === dia
+    );
+    //Al ser una referencia al objeto , al actualizar la referencia se actualiza el objeto original
+    if (entrenoExistente) {
+      entrenoExistente.totalEjercicios++; // incrementar contador de ejercicios
+    } else {
+      acumulador.push({
+        id_rutina,
+        titulo_dia,
+        dia,
+        totalRepes,
+        totalEjercicios: 1, // inicializar contador de ejercicios
+      });
+    }
+
+    return acumulador;
+  }, []);
+
   useEffect(() => {
     loadEntrenos();
+    loadMusculosEntrenos();
+    getUltimos6Entrenos();
+    setEntrenosUnicos(getEntrenosUnicos);
   }, [entrenos]);
+
   return (
     <>
       <div className="container text-center mt-2">
@@ -84,10 +170,71 @@ export default function Historial() {
             <h4 className="text-white">{cuentaSemanasEntrenadas()}</h4>
           </div>
         </div>
-        <div className="">
+        <div className="calendar">
           <DateCalendarServerRequest
             diasUnicos={diasUnicos}
           ></DateCalendarServerRequest>
+        </div>
+        <div className="text-start">
+          <h4 className="text-white">Ultimos Entrenos</h4>
+          <div className="row justify-content-between">
+            {ultimos6Entrenos.map((entreno, index) => (
+              <div className="col-5 bg-main m-2 pb-3 rounded-2" key={index}>
+                <div className="d-flex justify-content-between">
+                  <p className="h4 mt-2">
+                    {entrenosUnicos.find(
+                      (entrenoU) =>
+                        entrenoU.dia == entreno.dia_rutina &&
+                        entrenoU.id_rutina == entreno.id_rutina
+                    )
+                      ? entrenosUnicos.find(
+                          (entrenoU) =>
+                            entrenoU.id_rutina == entreno.id_rutina &&
+                            entrenoU.dia == entreno.dia_rutina
+                        ).titulo_dia
+                      : ""}
+                    {" - "}
+                    {entreno.tipo_entreno}
+                  </p>
+                  <p className="h4 mt-2">{entreno.fecha_entrenamiento}</p>
+                </div>
+                <div className="d-flex justify-content-around text-center">
+                  <div className="">
+                    <p className="text-grisOscuro">Total Ejercicios</p>
+                    <p className="h5">
+                      {entrenosUnicos.find(
+                        (entrenoU) =>
+                          entrenoU.dia == entreno.dia_rutina &&
+                          entrenoU.id_rutina == entreno.id_rutina
+                      )
+                        ? entrenosUnicos.find(
+                            (entrenoU) =>
+                              entrenoU.id_rutina == entreno.id_rutina &&
+                              entrenoU.dia == entreno.dia_rutina
+                          ).totalEjercicios
+                        : ""}
+                    </p>
+                  </div>
+                  <div className="">
+                    <p className="text-grisOscuro">Total Repes</p>
+                    <p className="h5">
+                      {entrenosUnicos.find(
+                        (entrenoU) =>
+                          entrenoU.dia == entreno.dia_rutina &&
+                          entrenoU.id_rutina == entreno.id_rutina
+                      )
+                        ? entrenosUnicos.find(
+                            (entrenoU) =>
+                              entrenoU.id_rutina == entreno.id_rutina &&
+                              entrenoU.dia == entreno.dia_rutina
+                          ).totalRepes
+                        : ""}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </>

@@ -34,7 +34,7 @@ function ServerDay(props) {
     <Badge
       key={props.day.toString()}
       overlap="circular"
-      badgeContent={isSelected ? "🌚" : undefined}
+      badgeContent={isSelected ? "🏋️‍♂️" : undefined}
     >
       <PickersDay
         {...other}
@@ -47,10 +47,9 @@ function ServerDay(props) {
 
 export default function DateCalendarServerRequest(props) {
   const { diasUnicos } = props;
-  console.log(diasUnicos);
   const requestAbortController = React.useRef(null);
   const [isLoading, setIsLoading] = React.useState(false);
-  const [highlightedDays, setHighlightedDays] = React.useState([1, 3, 16]);
+  const [highlightedDays, setHighlightedDays] = React.useState([1, 3, 15]);
 
   const fetchHighlightedDays = (date) => {
     const controller = new AbortController();

@@ -113,7 +113,8 @@ export const getDiasFromRutina = async (req, res, next) => {
 export const getMusculosEntrenos = async (req, res, next) => {
   try {
     let query =
-      "SELECT ejercicios.nombre, musculos.nombre_musculo, ejercicios_rutina.titulo_dia, ejercicios_rutina.id_rutina " +
+      "SELECT ejercicios.nombre, musculos.nombre_musculo, ejercicios_rutina.titulo_dia," +
+      "ejercicios_rutina.id_rutina, ejercicios_rutina.dia,ejercicios_rutina.series, ejercicios_rutina.repeticiones " +
       "FROM ejercicios " +
       "JOIN ejercicios_rutina ON ejercicios.id_ejercicio = ejercicios_rutina.id_ejercicio " +
       "JOIN musculos ON ejercicios.id_musculo = musculos.id_musculo";
