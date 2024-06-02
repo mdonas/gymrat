@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 function EjerciciosDiasCard({ rutina }) {
   const [ejercicios, setEjercicios] = useState([]);
   const [registroEntreno, setRegistroEntreno] = useState([]);
+  const [musculosEntrenos, setMusculosEntrenos] = useState([]);
   // console.log(ejercicios);
 
   const loadEjercicios = async () => {
@@ -15,6 +16,12 @@ function EjerciciosDiasCard({ rutina }) {
     separarEjercios();
     // console.log(data);
   };
+  const loadMusculosEntrenos = async () => {
+    const response = await fetch(`http://localhost:4000/musculos/entrenos`);
+    const data = await response.json();
+    setMusculosEntrenos(data);
+    // console.log(data);
+  };
   function handleClick(e) {
     handleEntrenamiento(e.target.value);
   }
@@ -22,35 +29,53 @@ function EjerciciosDiasCard({ rutina }) {
     const fecha = `${new Date().getDate()}-${
       new Date().getMonth() + 1
     }-${new Date().getFullYear()}`;
+    const user = JSON.parse(localStorage.user);
+    const musculos = musculosEntrenos
+      .filter((dato) => dato.titulo_dia === tituloDia && dato.id_rutina === 1)
+      .map((dato) => dato.nombre_musculo)
+      .filter((musculo, index, self) => self.indexOf(musculo) === index); // elimina duplicados
+
+    const stringMusculos = musculos.join(", ");
+    console.log(stringMusculos);
+
     setRegistroEntreno({
       id_rutina: rutina.id_rutina,
       fecha_entrenamiento: fecha,
       dia_rutina: ejerciciosPorDia[tituloDia][0].dia,
+      id_usuario: user.id_usuario,
+      tipo_entreno: stringMusculos,
     });
-    console.log(registroEntreno);
-    try {
-      const res = await fetch("http://localhost:4000/rutina/entreno", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(registroEntreno),
-      });
-      if (res.ok) {
-        alert("Se ha resgistrado su entreno ");
-      } else {
-        alert("Ha habido un error al registrar su entreno");
-      }
-    } catch (error) {
-      console.error(error);
-    }
+    console.log(user);
   }
 
   useEffect(() => {
     loadEjercicios();
-  }, [rutina.id_rutina]);
+    loadMusculosEntrenos();
+  }, [ejercicios]);
+
+  useEffect(() => {
+    if (registroEntreno) {
+      // eslint-disable-next-line no-inner-declarations
+      async function fetchData() {
+        try {
+          const res = await fetch("http://localhost:4000/rutina/entreno", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(registroEntreno),
+          });
+          if (res.ok) {
+            alert("Se ha registrado su entreno ");
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      }
+      fetchData();
+    }
+  }, [registroEntreno]);
 
   const [ejerciciosPorDia, setEjerciciosPorDia] = useState({});
   const [titulosUnicos, setTitulosUnicos] = useState([]);
-  console.log(ejerciciosPorDia);
   function separarEjercios() {
     const ejerciciosSeparados = {};
     const titulosSeparados = [];

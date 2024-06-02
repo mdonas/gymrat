@@ -14,6 +14,9 @@ import {
   updateEjercicio,
   updateEjerciciosRutina,
   checkUserRegistro,
+  getRegistrosEntreno,
+  getMusculos,
+  getMusculosEntrenos,
 } from "../controllers/controller.js";
 
 const router = Router();
@@ -27,14 +30,18 @@ router.get("/rutinas/:id/ejercicios", getEjerciciosFromRutina);
 router.get("/rutinas/:id/dias", getDiasFromRutina);
 
 router.get("/ejercicios", getAllEjercicios);
-
 router.get("/ejercicios/:id", getEjercicio);
+
+router.get("/recuperacion/:id", getRegistrosEntreno);
+
+router.get("/musculos", getMusculos);
+router.get("/musculos/entrenos", getMusculosEntrenos);
+
+router.post("/registrar", checkUserRegistro);
 
 router.post("/ejercicios", createEjercicio);
 router.post("/ejercicios/rutina", addEjercicioRutina);
 router.post("/rutina/entreno", createRegistroEntreno);
-
-router.post("/registrar", checkUserRegistro);
 
 router.delete("/ejercicios/:id", deleteEjercicio);
 

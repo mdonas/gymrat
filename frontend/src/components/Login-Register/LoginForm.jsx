@@ -51,7 +51,7 @@ export default function LoginForm() {
     e.preventDefault();
     if (user.usuario == userLogin.usuario) {
       if (user.contrasena == userLogin.contrasena) {
-        sessionStorage.setItem("user", JSON.stringify(user));
+        localStorage.setItem("user", JSON.stringify(user));
         navigate("/rutinas");
       } else {
         alert("La contaseña es incorrecta");

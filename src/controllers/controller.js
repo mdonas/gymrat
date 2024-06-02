@@ -1,3 +1,4 @@
+import { query } from "express";
 import { pool } from "../db.js";
 
 export const getUser = async (req, res, next) => {
@@ -36,11 +37,33 @@ export const getAllEjercicios = async (req, res, next) => {
     next(error);
   }
 };
+export const getMusculos = async (req, res, next) => {
+  try {
+    const allMusculos = await pool.query("SELECT * FROM musculos");
+
+    res.json(allMusculos.rows);
+  } catch (error) {
+    next(error);
+  }
+};
 export const getAllRutinas = async (req, res, next) => {
   try {
     const allEjercicios = await pool.query("SELECT * FROM rutinas");
 
     res.json(allEjercicios.rows);
+  } catch (error) {
+    next(error);
+  }
+};
+export const getRegistrosEntreno = async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    const allRegistros = await pool.query(
+      "SELECT * FROM registros_entrenamiento where id_usuario=$1 order by registros_entrenamiento.fecha_entrenamiento",
+      [id]
+    );
+
+    res.json(allRegistros.rows);
   } catch (error) {
     next(error);
   }
@@ -87,6 +110,20 @@ export const getDiasFromRutina = async (req, res, next) => {
   }
 };
 
+export const getMusculosEntrenos = async (req, res, next) => {
+  try {
+    let query =
+      "SELECT ejercicios.nombre, musculos.nombre_musculo, ejercicios_rutina.titulo_dia, ejercicios_rutina.id_rutina " +
+      "FROM ejercicios " +
+      "JOIN ejercicios_rutina ON ejercicios.id_ejercicio = ejercicios_rutina.id_ejercicio " +
+      "JOIN musculos ON ejercicios.id_musculo = musculos.id_musculo";
+
+    const ejercicio = await pool.query(query);
+    res.json(ejercicio.rows);
+  } catch (error) {
+    next(error);
+  }
+};
 export const getEjercicio = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -120,11 +157,17 @@ export const createEjercicio = async (req, res, next) => {
 };
 export const createRegistroEntreno = async (req, res, next) => {
   try {
-    const { id_rutina, fecha_entrenamiento, dia_rutina } = req.body;
+    const {
+      id_rutina,
+      fecha_entrenamiento,
+      dia_rutina,
+      id_usuario,
+      tipo_entreno,
+    } = req.body;
 
     const result = await pool.query(
-      "INSERT INTO registros_entrenamiento (id_rutina, fecha_entrenamiento, dia_rutina) VALUES ($1,$2,$3) RETURNING *",
-      [id_rutina, fecha_entrenamiento, dia_rutina]
+      "INSERT INTO registros_entrenamiento (id_rutina, fecha_entrenamiento, dia_rutina,id_usuario,tipo_entreno) VALUES ($1,$2,$3,$4,$5) RETURNING *",
+      [id_rutina, fecha_entrenamiento, dia_rutina, id_usuario, tipo_entreno]
     );
     res.json(result.rows[0]);
   } catch (error) {
