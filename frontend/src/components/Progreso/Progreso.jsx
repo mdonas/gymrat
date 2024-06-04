@@ -7,8 +7,9 @@ export default function Progreso() {
   const [musculos, setMusculos] = useState([]);
   const [entrenos, setEntrenos] = useState([]);
   const [ejerciciosEntrenos, setEjerciciosEntrenos] = useState([]);
+  const [totalEjercicios, setTotalEjercicios] = useState([]);
   const [selectedOption, setSelectedOption] = useState(musculos[0] || null);
-  const [seriesEjercicio, setSeriesEjercicio] = useState([]);
+  const [pesosEjercicios, setPesosEjercicios] = useState([]);
   let selectedEjercicio;
 
   const loadMusculos = async () => {
@@ -35,7 +36,36 @@ export default function Progreso() {
     setEntrenos(data);
     console.log(data);
   };
-
+  const loadTotalEjercicios = () => {
+    const ejerciciosUnicos = [];
+    entrenos.forEach((entreno) => {
+      ejerciciosEntrenos.forEach((ejercicio) => {
+        if (
+          entreno.id_rutina == ejercicio.id_rutina &&
+          entreno.dia_rutina == ejercicio.dia
+        ) {
+          ejerciciosUnicos.push(ejercicio);
+        }
+      });
+    });
+    setTotalEjercicios([...ejerciciosUnicos]);
+  };
+  useEffect(() => {
+    loadMusculos();
+    loadEntrenos();
+    loadEjerciciosEntrenos();
+  }, []);
+  useEffect(() => {
+    if (entrenos.length > 0 && ejerciciosEntrenos.length > 0) {
+      loadTotalEjercicios();
+    }
+    if (selectedOption && ejerciciosEntrenos) {
+      selectedEjercicio = ejerciciosEntrenos.find(
+        (entreno) => entreno.nombre_musculo === selectedOption.nombre_musculo
+      ).nombre;
+      setPesosEjercicios(calculatePesosEjercicios(selectedEjercicio));
+    }
+  }, [entrenos, ejerciciosEntrenos]);
   const handleChange = (e) => {
     const selectedMusculo = musculos.find(
       (musculo) => musculo.id_musculo == e.target.value
@@ -49,14 +79,14 @@ export default function Progreso() {
       selectedEjercicio = ejerciciosEntrenos.find(
         (entreno) => entreno.nombre_musculo === selectedOption.nombre_musculo
       ).nombre;
-      setSeriesEjercicio(calculateSeriesEjercicios(selectedEjercicio));
+      setPesosEjercicios(calculatePesosEjercicios(selectedEjercicio));
     }
   }, [selectedOption, ejerciciosEntrenos]);
 
-  function calculateSeriesEjercicios(ejercicio) {
+  function calculatePesosEjercicios(ejercicio) {
     console.log(ejercicio);
     const nombreElegido = ejercicio;
-    const pesos = ejerciciosEntrenos
+    const pesos = totalEjercicios
       .filter((dato) => dato.nombre === nombreElegido)
       .map((dato) => {
         return dato.peso;
@@ -66,11 +96,6 @@ export default function Progreso() {
     return pesos;
   }
 
-  useEffect(() => {
-    loadMusculos();
-    loadEntrenos();
-    loadEjerciciosEntrenos();
-  }, []);
   return (
     <>
       <div className="container text-center mt-2">
@@ -122,8 +147,8 @@ export default function Progreso() {
           </div>
         </div>
         <BasicColor
-          series={seriesEjercicio}
-          updateSeries={(newSeries) => setSeriesEjercicio(newSeries)}
+          series={pesosEjercicios}
+          updateSeries={(newSeries) => setPesosEjercicios(newSeries)}
           xAxisLabels={["Enero", "Febrero", "Marzo", "Abril", "Mayo"]}
         ></BasicColor>
       </div>

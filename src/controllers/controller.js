@@ -84,7 +84,7 @@ export const getEjerciciosFromRutina = async (req, res, next) => {
   try {
     const { id } = req.params;
     let query =
-      " SELECT er.orden, er.series, er.dia, er.titulo_dia,er.repeticiones,er.id_rutina,er.peso, " +
+      " SELECT er.orden, er.series, er.dia, er.titulo_dia,er.repeticiones,er.id_rutina,er.peso,er.fecha_edicion, " +
       "er.id_ejercicio_rutina,er.id_ejercicio, e.nombre AS ejercicio_nombre " +
       "FROM ejercicios_rutina AS er " +
       "JOIN ejercicios AS e ON er.id_ejercicio = e.id_ejercicio " +
@@ -114,7 +114,7 @@ export const getDiasFromRutina = async (req, res, next) => {
 export const getMusculosEntrenos = async (req, res, next) => {
   try {
     let query =
-      "SELECT ejercicios.nombre, musculos.nombre_musculo, ejercicios_rutina.titulo_dia," +
+      "SELECT ejercicios.nombre, musculos.nombre_musculo, ejercicios_rutina.titulo_dia, ejercicios_rutina.fecha_edicion ," +
       "ejercicios_rutina.id_rutina, ejercicios_rutina.dia,ejercicios_rutina.series, ejercicios_rutina.repeticiones,ejercicios_rutina.peso " +
       "FROM ejercicios " +
       "JOIN ejercicios_rutina ON ejercicios.id_ejercicio = ejercicios_rutina.id_ejercicio " +
@@ -265,10 +265,12 @@ export const updateEjerciciosRutina = async (req, res, next) => {
       peso,
       titulo_dia,
       id_ejercicio_rutina,
+      fecha_edicion,
     } = req.body;
     //si no quieren actualizar el nombre lo mantenemos
     const query =
-      `UPDATE ejercicios_rutina SET id_rutina = $1, id_ejercicio = $2, orden = $3, series = $4, dia = $5, titulo_dia = $6, repeticiones = $7,peso=$9 ` +
+      `UPDATE ejercicios_rutina SET id_rutina = $1, id_ejercicio = $2, orden = $3, series = $4, dia = $5, ` +
+      `titulo_dia = $6, repeticiones = $7,peso=$9 ,fecha_edicion=$10 ` +
       `WHERE id_ejercicio_rutina=$8 RETURNING *`;
     const result = await pool.query(query, [
       id_rutina,
@@ -280,6 +282,7 @@ export const updateEjerciciosRutina = async (req, res, next) => {
       repeticiones,
       id_ejercicio_rutina,
       peso,
+      fecha_edicion,
     ]);
 
     if (result.rows.length === 0)

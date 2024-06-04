@@ -7,13 +7,16 @@ export default function RutinasEditar() {
   const { id } = useParams();
   const navigate = useNavigate();
 
+  const fecha = `${new Date().getDate()}-${
+    new Date().getMonth() + 1
+  }-${new Date().getFullYear()}`;
+
   const loadEjercicios = async () => {
     const response = await fetch(
       `http://localhost:4000/rutinas/${id}/ejercicios`
     );
     const data = await response.json();
     setEjercicios(data);
-    setNewEjercicios(data);
     console.log(data);
   };
   useEffect(() => {
@@ -26,7 +29,7 @@ export default function RutinasEditar() {
   function handleChange(e) {
     const { name, value } = e.target;
     if (name == "repeticiones") {
-      handleCambioCampo(e.target.id, { [name]: value });
+      handleCambioCampo(e.target.id, { [name]: value, fecha_edicion: fecha });
     } else {
       handleCambioCampo(e.target.id, { [name]: parseInt(value, 10) });
     }
@@ -40,18 +43,27 @@ export default function RutinasEditar() {
         ...ejercicioaActualizar,
         ...camposActualizados,
       };
-      const ejerciciosActualizados = ejercicios.map((exercise) =>
-        exercise.id_ejercicio == id ? ejercicioActualizado : exercise
-      );
-      setNewEjercicios(ejerciciosActualizados);
-    } else {
-      console.log("no entro");
+
+      if (
+        newEjercicios.find((ejercicio) => {
+          return (
+            ejercicio.id_ejercicio_rutina ==
+            ejercicioActualizado.id_ejercicio_rutina
+          );
+        })
+      ) {
+        const newEjerciciosBien = newEjercicios.map((exercise) =>
+          exercise.id_ejercicio == id ? ejercicioActualizado : exercise
+        );
+        setNewEjercicios(newEjerciciosBien);
+      } else {
+        setNewEjercicios([...newEjercicios, ejercicioActualizado]);
+      }
     }
   }
   const handleSubmit = async (e) => {
     e.preventDefault();
     newEjercicios.forEach(async (ejercicio) => {
-      console.log(ejercicio);
       try {
         await fetch("http://localhost:4000/rutinas/editar", {
           method: "PUT",
@@ -107,7 +119,7 @@ export default function RutinasEditar() {
                 {ejercicios.map((ejercicio, index) => (
                   <>
                     <tr>
-                      <td className="" key={index + ejercicio.orden}>
+                      <td className="" key={1 + 12}>
                         {ejercicio.ejercicio_nombre}
                       </td>
                       <td key={index + ejercicio.orden}>
@@ -117,7 +129,7 @@ export default function RutinasEditar() {
                           name="orden"
                           id={ejercicio.id_ejercicio}
                           defaultValue={ejercicio.orden}
-                          onChange={handleChange}
+                          onBlur={handleChange}
                         />
                       </td>
                       <td key={index + ejercicio.orden}>
@@ -127,7 +139,7 @@ export default function RutinasEditar() {
                           name="series"
                           id={ejercicio.id_ejercicio}
                           defaultValue={ejercicio.series}
-                          onChange={handleChange}
+                          onBlur={handleChange}
                         />
                       </td>
                       <td key={index + ejercicio.orden}>
@@ -137,7 +149,7 @@ export default function RutinasEditar() {
                           name="repeticiones"
                           id={ejercicio.id_ejercicio}
                           defaultValue={ejercicio.repeticiones}
-                          onChange={handleChange}
+                          onBlur={handleChange}
                         />
                       </td>
                       <td key={index + ejercicio.peso}>
@@ -147,7 +159,7 @@ export default function RutinasEditar() {
                           name="peso"
                           id={ejercicio.id_ejercicio}
                           defaultValue={ejercicio.peso}
-                          onChange={handleChange}
+                          onBlur={handleChange}
                         />
                       </td>
                     </tr>

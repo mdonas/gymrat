@@ -10,7 +10,6 @@ const chartsParams = {
 export default function BasicColor({ series, updateSeries }) {
   console.log(series);
   const [selectedData, setSelectedData] = React.useState(series || 0);
-  const [entrenos, setEntrenos] = React.useState([]);
 
   React.useEffect(() => {
     setSelectedData(series);
