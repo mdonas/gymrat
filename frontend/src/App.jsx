@@ -8,6 +8,7 @@ import RutinasEditar from "./components/Rutinas-Ejercicios/RutinasEditar";
 import RutinasAdd from "./components/Rutinas-Ejercicios/RutinasAdd";
 import Recuperacion from "./components/Recuperacion/Recuperacion";
 import Historial from "./components/Historial/Historial";
+import Progreso from "./components/Progreso/Progreso";
 export default function App() {
   return (
     <BrowserRouter>
@@ -21,6 +22,7 @@ export default function App() {
           <Route path="/rutinas/editar/:id/añadir" element={<RutinasAdd />} />
           <Route path="/recuperacion" element={<Recuperacion />}></Route>
           <Route path="/historial" element={<Historial />}></Route>
+          <Route path="/progreso" element={<Progreso />}></Route>
         </Routes>
       </Container>
     </BrowserRouter>

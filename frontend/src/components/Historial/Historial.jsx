@@ -116,6 +116,11 @@ export default function Historial() {
       const fechaFormateada = `${dia} ${mes}`;
       return { ...dato, fecha_entrenamiento: fechaFormateada };
     });
+    entrenosFormateados.sort((a, b) => {
+      const fechaA = new Date(a.fecha_entrenamiento);
+      const fechaB = new Date(b.fecha_entrenamiento);
+      return fechaB - fechaA;
+    });
     setultimos6Entrenos(entrenosFormateados);
   }
   const getEntrenosUnicos = musculosEntrenos.reduce((acumulador, entreno) => {
@@ -187,13 +192,7 @@ export default function Historial() {
                       (entrenoU) =>
                         entrenoU.dia == entreno.dia_rutina &&
                         entrenoU.id_rutina == entreno.id_rutina
-                    )
-                      ? entrenosUnicos.find(
-                          (entrenoU) =>
-                            entrenoU.id_rutina == entreno.id_rutina &&
-                            entrenoU.dia == entreno.dia_rutina
-                        ).titulo_dia
-                      : ""}
+                    )?.titulo_dia || ""}
                     {" - "}
                     {entreno.tipo_entreno}
                   </p>
@@ -207,13 +206,7 @@ export default function Historial() {
                         (entrenoU) =>
                           entrenoU.dia == entreno.dia_rutina &&
                           entrenoU.id_rutina == entreno.id_rutina
-                      )
-                        ? entrenosUnicos.find(
-                            (entrenoU) =>
-                              entrenoU.id_rutina == entreno.id_rutina &&
-                              entrenoU.dia == entreno.dia_rutina
-                          ).totalEjercicios
-                        : ""}
+                      )?.totalEjercicios || ""}
                     </p>
                   </div>
                   <div className="">
@@ -223,13 +216,7 @@ export default function Historial() {
                         (entrenoU) =>
                           entrenoU.dia == entreno.dia_rutina &&
                           entrenoU.id_rutina == entreno.id_rutina
-                      )
-                        ? entrenosUnicos.find(
-                            (entrenoU) =>
-                              entrenoU.id_rutina == entreno.id_rutina &&
-                              entrenoU.dia == entreno.dia_rutina
-                          ).totalRepes
-                        : ""}
+                      )?.totalRepes || ""}
                     </p>
                   </div>
                 </div>

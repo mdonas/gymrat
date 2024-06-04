@@ -59,6 +59,9 @@ export default function RutinasAdd() {
         [e.target.name]: e.target.value,
       });
     }
+    setSelectedOption({
+      id_ejercicio: e.target.value,
+    });
 
     console.log(ejercicioRutina);
   };
@@ -81,10 +84,11 @@ export default function RutinasAdd() {
             <th className="pe-2">Repeticiones</th>
           </tr>
           <select
+            className="form-control bg-white mb-2  rounded-3"
             name="ejercicio"
             id=""
             onChange={handleChange}
-            value={selectedOption}
+            defaultValue={selectedOption}
           >
             {ejercicios.map((ejercicio) => (
               <option key={ejercicio.id} value={ejercicio.id_ejercicio}>
@@ -94,6 +98,7 @@ export default function RutinasAdd() {
           </select>
           <td key={12}>
             <input
+              className="form-control bg-white mb-2  rounded-3"
               type="text"
               name="titulo_dia"
               id=""
@@ -102,16 +107,35 @@ export default function RutinasAdd() {
             />
           </td>
           <td key={12}>
-            <input type="number" name="dia" id="" onChange={handleChange} />
-          </td>
-          <td key={12}>
-            <input type="number" name="orden" id="" onChange={handleChange} />
-          </td>
-          <td key={12}>
-            <input type="number" name="series" id="" onChange={handleChange} />
+            <input
+              className="form-control bg-white mb-2  rounded-3s"
+              type="number"
+              name="dia"
+              id=""
+              onChange={handleChange}
+            />
           </td>
           <td key={12}>
             <input
+              className="form-control bg-white mb-2  rounded-3"
+              type="number"
+              name="orden"
+              id=""
+              onChange={handleChange}
+            />
+          </td>
+          <td key={12}>
+            <input
+              className="form-control bg-white mb-2  rounded-3"
+              type="number"
+              name="series"
+              id=""
+              onChange={handleChange}
+            />
+          </td>
+          <td key={12}>
+            <input
+              className="form-control bg-white mb-2  rounded-3"
               type="text"
               name="repeticiones"
               id=""

@@ -1,12 +1,19 @@
 import * as React from "react";
 import dayjs from "dayjs";
+import "dayjs/locale/es";
 import Badge from "@mui/material/Badge";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { PickersDay } from "@mui/x-date-pickers/PickersDay";
 import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import { DayCalendarSkeleton } from "@mui/x-date-pickers/DayCalendarSkeleton";
-import { esES } from "@mui/x-date-pickers/locales";
+import styled from "styled-components";
+const Estilo = styled.div`
+  .MuiDateCalendar-root .Mui-disabled {
+    color: black;
+    opacity: 1 !important;
+  }
+`;
 
 function fakeFetch(diasUnicos, date, { signal }) {
   return new Promise((resolve, reject) => {
@@ -49,7 +56,7 @@ export default function DateCalendarServerRequest(props) {
   const { diasUnicos } = props;
   const requestAbortController = React.useRef(null);
   const [isLoading, setIsLoading] = React.useState(false);
-  const [highlightedDays, setHighlightedDays] = React.useState([1, 3, 15]);
+  const [highlightedDays, setHighlightedDays] = React.useState([]);
 
   const fetchHighlightedDays = (date) => {
     const controller = new AbortController();
@@ -89,29 +96,28 @@ export default function DateCalendarServerRequest(props) {
   };
 
   return (
-    <LocalizationProvider
-      dateAdapter={AdapterDayjs}
-      localeText={esES}
-      locale={esES}
-    >
-      <DateCalendar
-        sx={{
-          backgroundColor: "#e3d5bb",
-        }}
-        defaultValue={initialValue}
-        loading={isLoading}
-        onMonthChange={handleMonthChange}
-        renderLoading={() => <DayCalendarSkeleton />}
-        slots={{
-          day: ServerDay,
-        }}
-        slotProps={{
-          day: {
-            highlightedDays,
-          },
-        }}
-        language="es"
-      />
-    </LocalizationProvider>
+    <Estilo>
+      <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
+        <DateCalendar
+          disabled
+          sx={{
+            backgroundColor: "#e3d5bb",
+          }}
+          defaultValue={initialValue}
+          loading={isLoading}
+          onMonthChange={handleMonthChange}
+          renderLoading={() => <DayCalendarSkeleton />}
+          slots={{
+            day: ServerDay,
+          }}
+          slotProps={{
+            day: {
+              highlightedDays,
+            },
+          }}
+          language="es"
+        />
+      </LocalizationProvider>
+    </Estilo>
   );
 }

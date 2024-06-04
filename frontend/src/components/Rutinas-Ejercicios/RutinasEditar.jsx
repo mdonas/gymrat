@@ -84,7 +84,7 @@ export default function RutinasEditar() {
         {Object.entries(ejerciciosPorDia).map(([titulo, ejercicios]) => (
           <div
             key={titulo}
-            className="bg-main m-0 m-auto my-3 py-3 rounded-2 w-75 "
+            className="bg-main m-0 m-auto my-3 py-3 rounded-2 w-75 pe-4 "
           >
             <div className="container">
               <div className="d-flex justify-content-between align-items-center">
@@ -99,18 +99,20 @@ export default function RutinasEditar() {
               <table className="text-start m-0 m-auto">
                 <tr className="text-center">
                   <th></th>
-                  <th className="pe-2">Orden</th>
-                  <th className="pe-2">Series</th>
-                  <th className="pe-2">Repeticiones</th>
+                  <th className="">Orden</th>
+                  <th className="">Series</th>
+                  <th className="">Repeticiones</th>
+                  <th className="">Peso</th>
                 </tr>
                 {ejercicios.map((ejercicio, index) => (
                   <>
                     <tr>
-                      <td className="pe-2" key={index + ejercicio.orden}>
+                      <td className="" key={index + ejercicio.orden}>
                         {ejercicio.ejercicio_nombre}
                       </td>
                       <td key={index + ejercicio.orden}>
                         <input
+                          className="form-control bg-white mb-2  rounded-3"
                           type="number"
                           name="orden"
                           id={ejercicio.id_ejercicio}
@@ -120,6 +122,7 @@ export default function RutinasEditar() {
                       </td>
                       <td key={index + ejercicio.orden}>
                         <input
+                          className="form-control bg-white mb-2  rounded-3"
                           type="number"
                           name="series"
                           id={ejercicio.id_ejercicio}
@@ -129,10 +132,21 @@ export default function RutinasEditar() {
                       </td>
                       <td key={index + ejercicio.orden}>
                         <input
+                          className="form-control bg-white mb-2 rounded-3"
                           type="text"
                           name="repeticiones"
                           id={ejercicio.id_ejercicio}
                           defaultValue={ejercicio.repeticiones}
+                          onChange={handleChange}
+                        />
+                      </td>
+                      <td key={index + ejercicio.peso}>
+                        <input
+                          className="form-control bg-white mb-2 rounded-3"
+                          type="number"
+                          name="peso"
+                          id={ejercicio.id_ejercicio}
+                          defaultValue={ejercicio.peso}
                           onChange={handleChange}
                         />
                       </td>

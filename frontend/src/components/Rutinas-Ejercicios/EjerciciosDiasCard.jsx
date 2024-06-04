@@ -25,7 +25,7 @@ function EjerciciosDiasCard({ rutina }) {
   function handleClick(e) {
     handleEntrenamiento(e.target.value);
   }
-  async function handleEntrenamiento(tituloDia) {
+  function handleEntrenamiento(tituloDia) {
     const fecha = `${new Date().getDate()}-${
       new Date().getMonth() + 1
     }-${new Date().getFullYear()}`;
@@ -131,7 +131,8 @@ function EjerciciosDiasCard({ rutina }) {
                   <div key={ejercicio.ejercicio_nombre}>
                     <p>{ejercicio.ejercicio_nombre}</p>
                     <p>
-                      {ejercicio.series} X {ejercicio.repeticiones}
+                      {ejercicio.series} X {ejercicio.repeticiones} |
+                      {ejercicio.peso} KG
                     </p>
                   </div>
                 </>

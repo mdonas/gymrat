@@ -42,6 +42,7 @@ router.post("/registrar", checkUserRegistro);
 router.post("/ejercicios", createEjercicio);
 router.post("/ejercicios/rutina", addEjercicioRutina);
 router.post("/rutina/entreno", createRegistroEntreno);
+router.post("/registro/ejercicios", createRegistroEntreno);
 
 router.delete("/ejercicios/:id", deleteEjercicio);
 

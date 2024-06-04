@@ -84,7 +84,8 @@ export const getEjerciciosFromRutina = async (req, res, next) => {
   try {
     const { id } = req.params;
     let query =
-      " SELECT er.orden, er.series, er.dia, er.titulo_dia,er.repeticiones,er.id_rutina , er.id_ejercicio_rutina,er.id_ejercicio, e.nombre AS ejercicio_nombre " +
+      " SELECT er.orden, er.series, er.dia, er.titulo_dia,er.repeticiones,er.id_rutina,er.peso, " +
+      "er.id_ejercicio_rutina,er.id_ejercicio, e.nombre AS ejercicio_nombre " +
       "FROM ejercicios_rutina AS er " +
       "JOIN ejercicios AS e ON er.id_ejercicio = e.id_ejercicio " +
       "WHERE er.id_rutina = $1 ORDER BY er.dia";
@@ -114,7 +115,7 @@ export const getMusculosEntrenos = async (req, res, next) => {
   try {
     let query =
       "SELECT ejercicios.nombre, musculos.nombre_musculo, ejercicios_rutina.titulo_dia," +
-      "ejercicios_rutina.id_rutina, ejercicios_rutina.dia,ejercicios_rutina.series, ejercicios_rutina.repeticiones " +
+      "ejercicios_rutina.id_rutina, ejercicios_rutina.dia,ejercicios_rutina.series, ejercicios_rutina.repeticiones,ejercicios_rutina.peso " +
       "FROM ejercicios " +
       "JOIN ejercicios_rutina ON ejercicios.id_ejercicio = ejercicios_rutina.id_ejercicio " +
       "JOIN musculos ON ejercicios.id_musculo = musculos.id_musculo";
@@ -261,12 +262,13 @@ export const updateEjerciciosRutina = async (req, res, next) => {
       orden,
       repeticiones,
       series,
+      peso,
       titulo_dia,
       id_ejercicio_rutina,
     } = req.body;
     //si no quieren actualizar el nombre lo mantenemos
     const query =
-      `UPDATE ejercicios_rutina SET id_rutina = $1, id_ejercicio = $2, orden = $3, series = $4, dia = $5, titulo_dia = $6, repeticiones = $7 ` +
+      `UPDATE ejercicios_rutina SET id_rutina = $1, id_ejercicio = $2, orden = $3, series = $4, dia = $5, titulo_dia = $6, repeticiones = $7,peso=$9 ` +
       `WHERE id_ejercicio_rutina=$8 RETURNING *`;
     const result = await pool.query(query, [
       id_rutina,
@@ -277,6 +279,7 @@ export const updateEjerciciosRutina = async (req, res, next) => {
       titulo_dia,
       repeticiones,
       id_ejercicio_rutina,
+      peso,
     ]);
 
     if (result.rows.length === 0)
