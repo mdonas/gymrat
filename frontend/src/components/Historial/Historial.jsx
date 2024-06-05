@@ -53,7 +53,7 @@ export default function Historial() {
   function cuentaSemanasEntrenadas() {
     const entrenosPorSemana = entrenos.reduce((acc, item) => {
       const fecha = item.fecha_entrenamiento.substring(0, 10);
-      const semana = getWeekNumber(fecha); // función para obtener el número de semana del año
+      const semana = getNumeroSemana(fecha); // función para obtener el número de semana del año
       if (!acc[semana]) {
         acc[semana] = [];
       }
@@ -61,7 +61,9 @@ export default function Historial() {
       return acc;
     }, {});
 
-    function getWeekNumber(dateString) {
+    console.log(entrenosPorSemana);
+
+    function getNumeroSemana(dateString) {
       const date = new Date(dateString);
       const onejan = new Date(date.getFullYear(), 0, 1);
       return Math.ceil(((date - onejan) / 86400000 + onejan.getDay() + 1) / 7);

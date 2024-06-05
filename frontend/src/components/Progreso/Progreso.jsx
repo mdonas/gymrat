@@ -6,6 +6,7 @@ export default function Progreso() {
 
   const [musculos, setMusculos] = useState([]);
   const [entrenos, setEntrenos] = useState([]);
+  //todos los ejercicios que sale
   const [ejerciciosEntrenos, setEjerciciosEntrenos] = useState([]);
   const [totalEjercicios, setTotalEjercicios] = useState([]);
   const [selectedOption, setSelectedOption] = useState(musculos[0] || null);
@@ -48,7 +49,22 @@ export default function Progreso() {
         }
       });
     });
-    setTotalEjercicios([...ejerciciosUnicos]);
+    const ejerciciosBien = ejerciciosUnicos.filter((obj, index, self) => {
+      return (
+        self.findIndex((o) => {
+          return (
+            o.nombre === obj.nombre &&
+            o.nombre_musculo === obj.nombre_musculo &&
+            o.titulo_dia === obj.titulo_dia &&
+            o.fecha_edicion === obj.fecha_edicion &&
+            o.id_rutina === obj.id_rutina
+          );
+        }) === index
+      );
+    });
+    console.log(ejerciciosBien);
+    console.log(ejerciciosUnicos);
+    setTotalEjercicios([...ejerciciosBien]);
   };
   useEffect(() => {
     loadMusculos();
@@ -65,7 +81,7 @@ export default function Progreso() {
       ).nombre;
       setPesosEjercicios(calculatePesosEjercicios(selectedEjercicio));
     }
-  }, [entrenos, ejerciciosEntrenos]);
+  }, [entrenos, selectedOption, ejerciciosEntrenos]);
   const handleChange = (e) => {
     const selectedMusculo = musculos.find(
       (musculo) => musculo.id_musculo == e.target.value
@@ -74,14 +90,6 @@ export default function Progreso() {
 
     setSelectedOption(selectedMusculo);
   };
-  useEffect(() => {
-    if (selectedOption && ejerciciosEntrenos) {
-      selectedEjercicio = ejerciciosEntrenos.find(
-        (entreno) => entreno.nombre_musculo === selectedOption.nombre_musculo
-      ).nombre;
-      setPesosEjercicios(calculatePesosEjercicios(selectedEjercicio));
-    }
-  }, [selectedOption, ejerciciosEntrenos]);
 
   function calculatePesosEjercicios(ejercicio) {
     console.log(ejercicio);
@@ -95,7 +103,6 @@ export default function Progreso() {
 
     return pesos;
   }
-
   return (
     <>
       <div className="container text-center mt-2">

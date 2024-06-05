@@ -80,14 +80,20 @@ function EjerciciosDiasCard({ rutina }) {
     const ejerciciosSeparados = {};
     const titulosSeparados = [];
 
-    for (const exercise of ejercicios) {
-      const tituloDia = exercise.titulo_dia;
+    for (const ejer of ejercicios) {
+      const tituloDia = ejer.titulo_dia;
 
       if (!ejerciciosSeparados[tituloDia]) {
         ejerciciosSeparados[tituloDia] = [];
       }
-
-      ejerciciosSeparados[tituloDia].push(exercise);
+      const ejercicioYaExiste = ejerciciosSeparados[tituloDia].find(
+        (ejercicio) => {
+          return ejercicio.id_ejercicio == ejer.id_ejercicio;
+        }
+      );
+      if (!ejercicioYaExiste) {
+        ejerciciosSeparados[tituloDia].push(ejer);
+      }
       if (!titulosSeparados.includes(tituloDia)) {
         titulosSeparados.push(tituloDia);
       }

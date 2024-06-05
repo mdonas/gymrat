@@ -10,6 +10,7 @@ export default function RutinasEditar() {
   const fecha = `${new Date().getDate()}-${
     new Date().getMonth() + 1
   }-${new Date().getFullYear()}`;
+  console.log(fecha);
 
   const loadEjercicios = async () => {
     const response = await fetch(
@@ -28,10 +29,14 @@ export default function RutinasEditar() {
   }
   function handleChange(e) {
     const { name, value } = e.target;
+    console.log(fecha);
     if (name == "repeticiones") {
       handleCambioCampo(e.target.id, { [name]: value, fecha_edicion: fecha });
     } else {
-      handleCambioCampo(e.target.id, { [name]: parseInt(value, 10) });
+      handleCambioCampo(e.target.id, {
+        [name]: parseInt(value, 10),
+        fecha_edicion: fecha,
+      });
     }
   }
   function handleCambioCampo(id, camposActualizados) {
@@ -65,8 +70,8 @@ export default function RutinasEditar() {
     e.preventDefault();
     newEjercicios.forEach(async (ejercicio) => {
       try {
-        await fetch("http://localhost:4000/rutinas/editar", {
-          method: "PUT",
+        await fetch("http://localhost:4000/ejercicios/rutina", {
+          method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(ejercicio),
         });
@@ -78,11 +83,16 @@ export default function RutinasEditar() {
   };
 
   const ejerciciosPorDia = ejercicios.reduce((acc, current) => {
-    const { titulo_dia } = current;
+    const { titulo_dia, id_ejercicio } = current;
     if (!acc[titulo_dia]) {
       acc[titulo_dia] = [];
     }
-    acc[titulo_dia].push(current);
+    const ejercicioYaExiste = acc[titulo_dia].find((ejercicio) => {
+      return ejercicio.id_ejercicio == id_ejercicio;
+    });
+    if (!ejercicioYaExiste) {
+      acc[titulo_dia].push(current);
+    }
     return acc;
   }, {});
   Object.keys(ejerciciosPorDia).forEach((titulo) => {

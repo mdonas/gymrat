@@ -10,7 +10,7 @@ import { DayCalendarSkeleton } from "@mui/x-date-pickers/DayCalendarSkeleton";
 import styled from "styled-components";
 const Estilo = styled.div`
   .MuiDateCalendar-root .Mui-disabled {
-    color: black;
+    color: black !important;
     opacity: 1 !important;
   }
 `;
@@ -99,7 +99,6 @@ export default function DateCalendarServerRequest(props) {
     <Estilo>
       <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
         <DateCalendar
-          disabled
           sx={{
             backgroundColor: "#e3d5bb",
           }}

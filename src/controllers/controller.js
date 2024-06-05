@@ -88,7 +88,7 @@ export const getEjerciciosFromRutina = async (req, res, next) => {
       "er.id_ejercicio_rutina,er.id_ejercicio, e.nombre AS ejercicio_nombre " +
       "FROM ejercicios_rutina AS er " +
       "JOIN ejercicios AS e ON er.id_ejercicio = e.id_ejercicio " +
-      "WHERE er.id_rutina = $1 ORDER BY er.dia";
+      "WHERE er.id_rutina = $1 ORDER BY er.dia , er.fecha_edicion desc";
     const allEjercicios = await pool.query(query, [id]);
 
     res.json(allEjercicios.rows);
@@ -118,7 +118,8 @@ export const getMusculosEntrenos = async (req, res, next) => {
       "ejercicios_rutina.id_rutina, ejercicios_rutina.dia,ejercicios_rutina.series, ejercicios_rutina.repeticiones,ejercicios_rutina.peso " +
       "FROM ejercicios " +
       "JOIN ejercicios_rutina ON ejercicios.id_ejercicio = ejercicios_rutina.id_ejercicio " +
-      "JOIN musculos ON ejercicios.id_musculo = musculos.id_musculo";
+      "JOIN musculos ON ejercicios.id_musculo = musculos.id_musculo " +
+      "Order by ejercicios_rutina.fecha_edicion DESC";
 
     const ejercicio = await pool.query(query);
     res.json(ejercicio.rows);
@@ -185,14 +186,25 @@ export const addEjercicioRutina = async (req, res, next) => {
       orden,
       repeticiones,
       series,
+      peso,
       titulo_dia,
+      fecha_edicion,
     } = req.body;
 
-    const result = await pool.query(
-      "insert into ejercicios_rutina (id_rutina,id_ejercicio,orden,series,dia,titulo_dia,repeticiones) " +
-        "values ($1,$2,$3,$4,$5,$6,$7) RETURNING *",
-      [id_rutina, id_ejercicio, orden, series, dia, titulo_dia, repeticiones]
-    );
+    const query =
+      "INSERT INTO ejercicios_rutina (id_rutina, id_ejercicio, orden, series, dia, titulo_dia, repeticiones, peso, fecha_edicion) " +
+      "VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *";
+    const result = await pool.query(query, [
+      id_rutina,
+      id_ejercicio,
+      orden,
+      series,
+      dia,
+      titulo_dia,
+      repeticiones,
+      peso,
+      fecha_edicion,
+    ]);
     res.json(result.rows[0]);
   } catch (error) {
     next(error);

@@ -10,12 +10,12 @@ export default function RutinasAdd() {
   const navigate = useNavigate();
 
   const [ejercicios, setEjercicios] = useState([]);
-  const [rutina, setRutina] = useState([]);
   const [ejercicioRutina, setEjercicioRutina] = useState({
     id_ejercicio: 1,
     id_rutina: idInt,
     titulo_dia: tituloDia,
   });
+  const [rutina, setRutina] = useState([]);
 
   const [selectedOption, setSelectedOption] = useState(null);
 
