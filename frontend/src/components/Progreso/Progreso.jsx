@@ -37,6 +37,7 @@ export default function Progreso() {
     setEntrenos(data);
     console.log(data);
   };
+  //vamos a recorrer los entrenos que ha realizado el usuario he iremos añadiendo los ejercicios que pertenecen a esos dias de esas rutinas
   const loadTotalEjercicios = () => {
     const ejerciciosUnicos = [];
     entrenos.forEach((entreno) => {
@@ -49,28 +50,40 @@ export default function Progreso() {
         }
       });
     });
-    const ejerciciosBien = ejerciciosUnicos.filter((obj, index, self) => {
-      return (
-        self.findIndex((o) => {
-          return (
-            o.nombre === obj.nombre &&
-            o.nombre_musculo === obj.nombre_musculo &&
-            o.titulo_dia === obj.titulo_dia &&
-            o.fecha_edicion === obj.fecha_edicion &&
-            o.id_rutina === obj.id_rutina
-          );
-        }) === index
-      );
-    });
+
+    //elemento es el ejercicio que comprobamos en cada iteracion
+    //el indice es el numero de iteracion
+    //vamos a buscar en el array original el primer objeto que tenga los mismos valores que el elemento de la iteracion
+    //cuendo lo encuentra devuelve su posicion en el arrayOriginal que debera coincidir con el indice
+    //Si el indice no coincide significa que antes del elemento que estamos iterando, ya habia otro igual
+    const ejerciciosBien = ejerciciosUnicos.filter(
+      (elemento, indice, arrayOriginal) => {
+        return (
+          arrayOriginal.findIndex((entreno) => {
+            return (
+              entreno.nombre === elemento.nombre &&
+              entreno.nombre_musculo === elemento.nombre_musculo &&
+              entreno.titulo_dia === elemento.titulo_dia &&
+              entreno.fecha_edicion === elemento.fecha_edicion &&
+              entreno.id_rutina === elemento.id_rutina
+            );
+          }) === indice
+        );
+      }
+    );
+    //recuperaremos los ejercicios no duplicados , si el peso no es igual no se considera como duplicado, que es lo que necesitamos
+
     console.log(ejerciciosBien);
-    console.log(ejerciciosUnicos);
     setTotalEjercicios([...ejerciciosBien]);
   };
+  //al cargar la paginas establecemos los estados
   useEffect(() => {
     loadMusculos();
     loadEntrenos();
     loadEjerciciosEntrenos();
   }, []);
+  //al cambiar el estado de entrenos, se ejecuta esta funcion
+  //cargamos el total de ejercicios realizados, buscamos el ejercicio seleccionado y calculamos los pesos del ejercicio seleccionado
   useEffect(() => {
     if (entrenos.length > 0 && ejerciciosEntrenos.length > 0) {
       loadTotalEjercicios();
@@ -82,6 +95,8 @@ export default function Progreso() {
       setPesosEjercicios(calculatePesosEjercicios(selectedEjercicio));
     }
   }, [entrenos, selectedOption, ejerciciosEntrenos]);
+
+  //cuando cambiamos el musculo actualizamos la opcion seleccionada por lo que se actualiza el ejercicio
   const handleChange = (e) => {
     const selectedMusculo = musculos.find(
       (musculo) => musculo.id_musculo == e.target.value
@@ -90,7 +105,7 @@ export default function Progreso() {
 
     setSelectedOption(selectedMusculo);
   };
-
+  //vamos a recuperar las diferentes filas del ejercicio elegido y recuperamos los pessos
   function calculatePesosEjercicios(ejercicio) {
     console.log(ejercicio);
     const nombreElegido = ejercicio;
@@ -144,7 +159,7 @@ export default function Progreso() {
                 className="form-control fs-5 bg-white mb-2 rounded-3 w-50 text-center"
                 readOnly
                 value={
-                  ejerciciosEntrenos.find(
+                  totalEjercicios.find(
                     (entreno) =>
                       entreno.nombre_musculo === selectedOption?.nombre_musculo
                   )?.nombre || "NO hay registros"
@@ -156,7 +171,6 @@ export default function Progreso() {
         <BasicColor
           series={pesosEjercicios}
           updateSeries={(newSeries) => setPesosEjercicios(newSeries)}
-          xAxisLabels={["Enero", "Febrero", "Marzo", "Abril", "Mayo"]}
         ></BasicColor>
       </div>
     </>

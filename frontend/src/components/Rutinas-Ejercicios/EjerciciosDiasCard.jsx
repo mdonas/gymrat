@@ -2,10 +2,16 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 function EjerciciosDiasCard({ rutina }) {
+  //estados
+  //ejercicios que estan asignados a una rutina
   const [ejercicios, setEjercicios] = useState([]);
-  const [registroEntreno, setRegistroEntreno] = useState([]);
+  //recupera los datos de ejercicios_rutina ademas del nombre del ejercicio y el nombre del musculo
   const [musculosEntrenos, setMusculosEntrenos] = useState([]);
-  // console.log(ejercicios);
+  //lo rellenaremos con los datos del registrro entrenamiento en el onclick
+  const [registroEntreno, setRegistroEntreno] = useState([]);
+
+  const [ejerciciosPorDia, setEjerciciosPorDia] = useState({});
+  const [titulosUnicos, setTitulosUnicos] = useState([]);
 
   const loadEjercicios = async () => {
     const response = await fetch(
@@ -48,11 +54,13 @@ function EjerciciosDiasCard({ rutina }) {
     console.log(user);
   }
 
+  //se cargan los ejercicios y los datos de ejercicios_rutina cuando cambie el valor de los ejercicios
   useEffect(() => {
     loadEjercicios();
     loadMusculosEntrenos();
   }, [ejercicios]);
 
+  //si tenemos un registroEntreno lo ejecutamos, y cada vez que cambie
   useEffect(() => {
     if (registroEntreno) {
       // eslint-disable-next-line no-inner-declarations
@@ -74,8 +82,7 @@ function EjerciciosDiasCard({ rutina }) {
     }
   }, [registroEntreno]);
 
-  const [ejerciciosPorDia, setEjerciciosPorDia] = useState({});
-  const [titulosUnicos, setTitulosUnicos] = useState([]);
+  //obtenemos un array con los titulos de cada dia y otro con los ejercicios separados por dias
   function separarEjercios() {
     const ejerciciosSeparados = {};
     const titulosSeparados = [];

@@ -16,15 +16,16 @@ export default function RutinasAdd() {
     titulo_dia: tituloDia,
   });
   const [rutina, setRutina] = useState([]);
-
   const [selectedOption, setSelectedOption] = useState(null);
 
+  //cargamos todos los ejercicios posibles, para rellenar el select
   const loadEjercicios = async () => {
     const response = await fetch("http://localhost:4000/ejercicios");
     const data = await response.json();
     console.log(data);
     setEjercicios(data);
   };
+  //cargamos la rutina a la que estamos añadiendo
   const loadRutina = async () => {
     const response = await fetch(`http://localhost:4000/rutinas/${id}`);
     const data = await response.json();
@@ -32,6 +33,7 @@ export default function RutinasAdd() {
     setRutina(data[0]);
   };
 
+  //añadoms ejercicio rutina
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -45,6 +47,8 @@ export default function RutinasAdd() {
       console.error(error);
     }
   };
+
+  //en funcion de que atributo se halla cambiado actuamos de una forma u otra
   const handleChange = (e) => {
     if (e.target.name == "ejercicio") {
       setEjercicioRutina({ ...ejercicioRutina, id_ejercicio: e.target.value });
@@ -70,6 +74,7 @@ export default function RutinasAdd() {
     loadEjercicios();
     loadRutina();
   }, []);
+
   return (
     <>
       <div className="container bg-main m-0 m-auto mt-3 rounded-2 pb-2">

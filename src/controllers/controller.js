@@ -310,27 +310,12 @@ export const checkUserRegistro = async (req, res, next) => {
   try {
     let { nombre, correo, usuario, contrasena } = req.body;
     //si no quieren actualizar el nombre lo mantenemos
-    let getUsuario = await pool.query(
-      "SELECT usuario FROM usuario where usuario=$1",
-      [usuario]
+
+    const res = await pool.query(
+      "INSERT INTO usuario (nombre, correo,contrasena, usuario) VALUES ($1,$2,$3,$4) RETURNING *",
+      [nombre, correo, contrasena, usuario]
     );
-    //si no quieren actualizar la descripcion lo mantenemos
-    let getEmail = await pool.query(
-      "SELECT correo FROM usuario where correo=$1",
-      [correo]
-    );
-    if (getEmail.rowCount != 0) {
-      return res
-        .status(404)
-        .json({ message: "Ya existe una cuenta con ese email" });
-    } else if (getUsuario.rowCount != 0) {
-      return res.status(404).json({ message: "Ya existe ese usuario" });
-    } else {
-      await pool.query(
-        "INSERT INTO usuario (nombre, correo,contrasena, usuario) VALUES ($1,$2,$3,$4) RETURNING *",
-        [nombre, correo, contrasena, usuario]
-      );
-    }
+
     res.json(result.rows[0]);
   } catch (error) {
     next(error);

@@ -3,6 +3,7 @@ import { useState } from "react";
 
 export default function LoginForm() {
   const navigate = useNavigate();
+  //usuario en bbdd
   const [user, setUser] = useState({
     id_usuario: "",
     nombre: "",
@@ -10,6 +11,8 @@ export default function LoginForm() {
     usuario: "",
     contrasena: "",
   });
+
+  //datos que escriben en el formulario
   const [userLogin, setUserLogin] = useState({
     usuario: "",
     contrasena: "",
@@ -39,6 +42,8 @@ export default function LoginForm() {
       });
     }
   };
+
+  //recuperamos el usuarioen función de los datos que nos pasan
   const handleBlur = (e) => {
     if (e.target.name == "contrasena") {
       setUserLogin({ ...userLogin, contrasena: e.target.value });
@@ -47,6 +52,7 @@ export default function LoginForm() {
       getUser(user.usuario, "usuario");
     }
   };
+  //comprobamos que los valores esten correctos antes de guardar el usuario en el localStorgae e ir a rutinas
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (user.usuario == userLogin.usuario) {
@@ -60,6 +66,7 @@ export default function LoginForm() {
       alert("El usuario es incorrecto");
     }
   };
+  //actualizamos los datos
   const handleChange = (e) => {
     setUser({ ...user, [e.target.name]: e.target.value });
   };

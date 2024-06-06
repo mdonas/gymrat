@@ -7,7 +7,7 @@ const chartsParams = {
   height: 300,
 };
 
-export default function BasicColor({ series, updateSeries }) {
+export default function BasicColor({ series }) {
   console.log(series);
   const [selectedData, setSelectedData] = React.useState(series || 0);
 
@@ -15,9 +15,6 @@ export default function BasicColor({ series, updateSeries }) {
     setSelectedData(series);
   }, [series]);
 
-  const handleChange = (newSeries) => {
-    updateSeries(newSeries);
-  };
   return (
     <Stack
       direction="column"

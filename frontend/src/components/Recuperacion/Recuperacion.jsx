@@ -9,6 +9,7 @@ export default function Recuperacion() {
   let entrenoMasReciente;
   let diasDesdeEntreno;
 
+  //cargos registros de un user
   const loadEntrenos = async () => {
     const response = await fetch(
       `http://localhost:4000/recuperacion/${user.id_usuario}`
@@ -17,12 +18,14 @@ export default function Recuperacion() {
     setEntrenos(data);
     // console.log(data);
   };
+  //cargamos los datos de lla tabla musculos
   const loadMusculos = async () => {
     const response = await fetch(`http://localhost:4000/musculos`);
     const data = await response.json();
     setMusculos(data);
     // console.log(data);
   };
+  //
   const loadEntrenos3Dias = () => {
     loadEntrenos();
     let entrenosRecientes = entrenos.slice(-3);
@@ -31,6 +34,9 @@ export default function Recuperacion() {
     entrenosRecientes.sort((a, b) => {
       return new Date(b.fecha_entrenamiento) - new Date(a.fecha_entrenamiento);
     });
+    //recorremos los tres entrenos y almacenamos en un set, no duplicados los distintos tipos entrenos
+    //lo pasamos a array y lo mapeamos para sacar los entrenos completos de los primeros que sean de ese tipo entreno
+    //eliminamos duplicados para quedarnos con los unicos mas recientes
     console.log(entrenosRecientes);
     const entrenamientosUnicos = Array.from(
       new Set(
@@ -50,6 +56,7 @@ export default function Recuperacion() {
     loadEntrenos3Dias();
   }, [musculos]);
 
+  //previo es el acumulador que en este caso va a guardar el entreno mas reciente
   if (entrenos && entrenos.length > 0) {
     entrenoMasReciente = entrenos.reduce((previo, actual) => {
       if (
@@ -63,6 +70,7 @@ export default function Recuperacion() {
       }
     });
   }
+  //calculamos los dias desde el ultimo entreno
   if (entrenoMasReciente) {
     const ultimoEntrenamiento = new Date(
       entrenoMasReciente.fecha_entrenamiento
@@ -76,6 +84,8 @@ export default function Recuperacion() {
       diasDesdeEntreno = diasTranscurridos;
     }
   }
+  //calculamos los dias desde ese entreno
+  //cuando es en el mismo dia devolvia -1
   function calculaDias(entreno) {
     const ultimoEntrenamiento = new Date(entreno.fecha_entrenamiento);
     const diasTranscurridos = Math.floor(
@@ -89,6 +99,7 @@ export default function Recuperacion() {
     }
     return diasDesde;
   }
+  //comprobamos si se ha entrenado el musculo, si es asi calculamos dias sino valor por defecto
   function comprobarMusculo(musculo, entreno) {
     if (entreno.tipo_entreno.includes(musculo.nombre_musculo)) {
       return calculaDias(entreno);
@@ -96,6 +107,7 @@ export default function Recuperacion() {
       return "+3";
     }
   }
+  //llamamos a comprobarMusculo y enfuncion de donde se llame a este funcion y lo que devuelva comprobarmusculo devolvemos unos valores u otros
   function comprobarEstado(musculo, entreno, tipo) {
     const resultado = comprobarMusculo(musculo, entreno);
     if (tipo == "clase") {

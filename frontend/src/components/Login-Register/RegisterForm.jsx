@@ -3,17 +3,20 @@ import { Link, useNavigate } from "react-router-dom";
 
 export default function RegisterForm() {
   const navigate = useNavigate();
+  //usuarioNuevo
   const [user, setUser] = useState({
     nombre: "",
     correo: "",
     usuario: "",
     contrasena: "",
   });
+  //usuarioExistente
   const [databaseUser, setDatabaseUser] = useState({
     correo: "",
     usuario: "",
   });
 
+  //recuperamos el usuario en funcion del correo o del usuario, segun lo que halla pasado cuadno se llama
   const getUser = async (parametro, tipo) => {
     if (tipo == "usuario") {
       let getUsuario = await fetch(`http://localhost:4000/login/${parametro}`);
@@ -37,6 +40,8 @@ export default function RegisterForm() {
     }
   };
 
+  //si el databaseUser tiene datos , es que existe por lo que reportamos un error u otro
+  //Si no hay datos hacemos la peticion y vamos a la página de login
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (databaseUser.usuario) {
@@ -56,9 +61,11 @@ export default function RegisterForm() {
       }
     }
   };
+  //vamos actualizando los datos cuando cambian
   const handleChange = (e) => {
     setUser({ ...user, [e.target.name]: e.target.value });
   };
+  //En el onblur es cuando llamamos a getUser para recuperar el usuario que coincida con esos valores
   const handleBlur = (e) => {
     if (e.target.name == "correo") {
       getUser(user.correo, "correo");
@@ -67,7 +74,7 @@ export default function RegisterForm() {
       getUser(user.usuario, "usuario");
     }
   };
-
+  //agrupamos la comprobacion de si los campos son correctos
   function isValid() {
     if (
       validateNombre(user.nombre) &&

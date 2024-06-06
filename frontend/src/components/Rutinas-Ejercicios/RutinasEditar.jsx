@@ -4,13 +4,12 @@ import { useNavigate, useParams } from "react-router-dom";
 export default function RutinasEditar() {
   const [ejercicios, setEjercicios] = useState([]);
   const [newEjercicios, setNewEjercicios] = useState([]);
+
   const { id } = useParams();
   const navigate = useNavigate();
-
   const fecha = `${new Date().getDate()}-${
     new Date().getMonth() + 1
   }-${new Date().getFullYear()}`;
-  console.log(fecha);
 
   const loadEjercicios = async () => {
     const response = await fetch(
@@ -24,6 +23,7 @@ export default function RutinasEditar() {
     loadEjercicios();
   }, []);
 
+  //le pasamos el titulo del dia para ponerlo en el input
   function handleAdd(titulo) {
     navigate("añadir", { state: titulo });
   }
@@ -82,6 +82,7 @@ export default function RutinasEditar() {
     });
   };
 
+  //generamos un array con los dias , que dentro contienen los ejercicios de cada dia
   const ejerciciosPorDia = ejercicios.reduce((acc, current) => {
     const { titulo_dia, id_ejercicio } = current;
     if (!acc[titulo_dia]) {
@@ -95,10 +96,10 @@ export default function RutinasEditar() {
     }
     return acc;
   }, {});
+  //lo reccorremos sobre las keys, los dias, y los ordenamos
   Object.keys(ejerciciosPorDia).forEach((titulo) => {
     ejerciciosPorDia[titulo].sort((a, b) => a.orden - b.orden);
   });
-  console.log(ejerciciosPorDia);
 
   return (
     <>

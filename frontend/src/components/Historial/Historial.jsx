@@ -9,6 +9,7 @@ export default function Historial() {
   const [ultimos6Entrenos, setultimos6Entrenos] = useState([]);
   const [musculosEntrenos, setMusculosEntrenos] = useState([]);
   const [entrenosUnicos, setEntrenosUnicos] = useState([]);
+  //cargamos registros del usuario
   const loadEntrenos = async () => {
     const response = await fetch(
       `http://localhost:4000/recuperacion/${user.id_usuario}`
@@ -17,6 +18,7 @@ export default function Historial() {
     setEntrenos(data);
     console.log(data);
   };
+  //recupera los datos de ejercicios_rutina ademas del nombre del ejercicio y el nombre del musculo
   const loadMusculosEntrenos = async () => {
     const response = await fetch(`http://localhost:4000/musculos/entrenos`);
     const data = await response.json();
@@ -25,6 +27,7 @@ export default function Historial() {
   };
 
   function cuentaDiasEntrenados() {
+    //vamos a establecer el dia de comienzo y de final de la semana y despues comprobar si esta en ese rango
     const hoy = new Date();
     const diaSemanaActual = hoy.getDay();
     const primerDiaSemana =
@@ -41,28 +44,31 @@ export default function Historial() {
         fechaEntreno.getDate() <= ultimoDiaSemana
       );
     });
-
+    //despues recuperamos los dias de la semana que han sido Luneas,Martes,Miercole
     const diasEntrenamiento = entrenosSemanaActual.map((entreno) =>
       entreno.fecha_entrenamiento.substring(0, 10)
     ); // extraemos la fecha sin la hora
-
+    //y los asignamos al set para depsues medir y saber los dias que ha ido en la semana
     const diasUnicos = [...new Set(diasEntrenamiento)]; // eliminamos duplicados
 
     return diasUnicos.length;
   }
+
   function cuentaSemanasEntrenadas() {
-    const entrenosPorSemana = entrenos.reduce((acc, item) => {
-      const fecha = item.fecha_entrenamiento.substring(0, 10);
+    //recuperamos los enterenos separados por la semana a la que pertenecen semana 12,semana13...
+    const entrenosPorSemana = entrenos.reduce((acumulador, entreno) => {
+      const fecha = entreno.fecha_entrenamiento.substring(0, 10);
       const semana = getNumeroSemana(fecha); // función para obtener el número de semana del año
-      if (!acc[semana]) {
-        acc[semana] = [];
+      if (!acumulador[semana]) {
+        acumulador[semana] = [];
       }
-      acc[semana].push(fecha);
-      return acc;
+      acumulador[semana].push(fecha);
+      return acumulador;
     }, {});
 
     console.log(entrenosPorSemana);
 
+    //despues recuperamos la semana actual, semana22
     function getNumeroSemana(dateString) {
       const date = new Date(dateString);
       const onejan = new Date(date.getFullYear(), 0, 1);
@@ -70,6 +76,7 @@ export default function Historial() {
     }
 
     let semanasCon5Dias = 0;
+    //iteramos por los keys,las semanas y comprobamos que halla 5 dias en esa semana, lo establecido como racha
     Object.keys(entrenosPorSemana).forEach((semana) => {
       const entrenos = entrenosPorSemana[semana];
       const diasUnicos = [
@@ -79,8 +86,11 @@ export default function Historial() {
         semanasCon5Dias++;
       }
     });
+    //devolvemos lo acumulado
     return semanasCon5Dias;
   }
+  //dias a pasar al calendario
+  //filtramos los entrenos de este mes en un set, convertimos a arrray y mapeamos recuperando el dia
   const diasUnicos = Array.from(
     new Set(
       entrenos
@@ -93,8 +103,11 @@ export default function Historial() {
     )
   );
 
+  //recuperamos los 5 ultimos entrenos y formateamos
   function getUltimos6Entrenos() {
     let entrenosRecientes = entrenos.slice(-6);
+    console.log(entrenos);
+    console.log(entrenosRecientes);
 
     const meses = [
       "Enero",
@@ -110,7 +123,7 @@ export default function Historial() {
       "Noviembre",
       "Diciembre",
     ];
-
+    //formateamos la fecha para cada entreno
     const entrenosFormateados = entrenosRecientes.map((dato) => {
       const fecha = new Date(dato.fecha_entrenamiento);
       const dia = fecha.getDate();
@@ -118,13 +131,16 @@ export default function Historial() {
       const fechaFormateada = `${dia} ${mes}`;
       return { ...dato, fecha_entrenamiento: fechaFormateada };
     });
+    //los ordenamos
     entrenosFormateados.sort((a, b) => {
       const fechaA = new Date(a.fecha_entrenamiento);
       const fechaB = new Date(b.fecha_entrenamiento);
       return fechaB - fechaA;
     });
+    //los guardamos en el estado
     setultimos6Entrenos(entrenosFormateados);
   }
+  //calculamos el total de ejercicios y de repeticiones por entreno
   const getEntrenosUnicos = musculosEntrenos.reduce((acumulador, entreno) => {
     const { id_rutina, dia, titulo_dia, series, repeticiones } = entreno;
     console.log(entreno);

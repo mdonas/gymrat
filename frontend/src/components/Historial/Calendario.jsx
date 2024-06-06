@@ -15,6 +15,7 @@ const Estilo = styled.div`
   }
 `;
 
+//esto es lo que carga los iconos
 function fakeFetch(diasUnicos, date, { signal }) {
   return new Promise((resolve, reject) => {
     const timeout = setTimeout(() => {
@@ -52,12 +53,14 @@ function ServerDay(props) {
   );
 }
 
+//este el propio componetne, donde pasamos las props
 export default function DateCalendarServerRequest(props) {
   const { diasUnicos } = props;
   const requestAbortController = React.useRef(null);
   const [isLoading, setIsLoading] = React.useState(false);
   const [highlightedDays, setHighlightedDays] = React.useState([]);
 
+  //renderizas los dias a marcar, llamando a la funcion de antes
   const fetchHighlightedDays = (date) => {
     const controller = new AbortController();
     fakeFetch(diasUnicos, date, {
@@ -77,12 +80,14 @@ export default function DateCalendarServerRequest(props) {
     requestAbortController.current = controller;
   };
 
+  //al cargar actualiza el estado de los dias a marcascon unos valores iniciales
   React.useEffect(() => {
     fetchHighlightedDays(initialValue);
     // abort request on unmount
     return () => requestAbortController.current?.abort();
   }, []);
 
+  //cuando cambie el mes se vuelven a cargar los dias a marcar
   const handleMonthChange = (date) => {
     if (requestAbortController.current) {
       // make sure that you are aborting useless requests
@@ -95,6 +100,8 @@ export default function DateCalendarServerRequest(props) {
     fetchHighlightedDays(date);
   };
 
+  //localizationProvider establece que los dias los vamos a establecer con dayjs y ademas el idioma
+  //se pasan diferentes atributos para pasar los valores de los dias a marcar
   return (
     <Estilo>
       <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
